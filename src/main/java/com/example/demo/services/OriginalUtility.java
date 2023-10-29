@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-public class Utility {
+public class OriginalUtility {
   public void Compress(int[][][] pixels, String outputFileName) throws IOException {
         // The following is a bad implementation that we have intentionally put in the function to make App.java run, you should 
         // write code to reimplement the function without changing any of the input parameters, and making sure the compressed file

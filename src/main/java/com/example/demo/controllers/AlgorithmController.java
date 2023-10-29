@@ -10,7 +10,7 @@ import com.example.demo.services.MAECalculator;
 import com.example.demo.services.MSECalculator;
 import com.example.demo.services.PSNRCalculator;
 import com.example.demo.services.PixeltoImageConverter;
-import com.example.demo.services.Utility;
+import com.example.demo.services.OriginalUtility;
 
 import java.io.File;
 import javax.imageio.ImageIO;
@@ -45,7 +45,7 @@ public class AlgorithmController {
     try {
       System.out.println("test now");
 
-      Utility Utility = new Utility();
+      OriginalUtility Utility = new OriginalUtility();
 
       String ImageDirectory = "src/main/java/com/example/demo/images/";
       File directory = new File(ImageDirectory);
