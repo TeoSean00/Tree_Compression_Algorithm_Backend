@@ -45,7 +45,7 @@ public class AlgorithmController {
     try {
       System.out.println("test original algorithm now");
 
-      UtilityColourHuffmanString Utility = new UtilityColourHuffmanString();
+      UtilityOriginalBad Utility = new UtilityOriginalBad();
 
       String ImageDirectory = "src/main/java/com/example/demo/images/";
       File directory = new File(ImageDirectory);
@@ -444,7 +444,7 @@ public class AlgorithmController {
     HashMap<String, ArrayList<String>> imageResults = new HashMap<>();
 
     try {
-      UtilityColourHuffman512 Utility = new UtilityColourHuffman512();
+      UtilityColourHuffmanString Utility = new UtilityColourHuffmanString();
 
       String ImageDirectory = "src/main/java/com/example/demo/images/";
       File directory = new File(ImageDirectory);
@@ -970,6 +970,46 @@ public class AlgorithmController {
     return imageResults;
   }
 
+  // Helper function to run an algorithm based on the provided algorithm name
+  private HashMap<String, HashMap<String, ArrayList<String>>> runChosenAlgorithm(String algorithm) {
+
+    HashMap<String, HashMap<String, ArrayList<String>>> algoResult = new HashMap<>();
+
+    try {
+        // Run the first algorithm concurrently
+      if (algorithm.equals("Original Bad Algorithm")) {
+        HashMap<String, ArrayList<String>> result = runOriginalBad();
+        algoResult.put(algorithm, result);
+      }
+      else if (algorithm.equals("Huffman Algorithm")) {
+        HashMap<String, ArrayList<String>> result = runHuffmanOnly();
+        algoResult.put(algorithm, result);
+      }
+      else if (algorithm.equals("Colour Quant and Huffman Algorithm - Quant 256")) {
+        HashMap<String, ArrayList<String>> result = runColourHuffman256();
+        algoResult.put(algorithm, result);
+      }
+      else if (algorithm.equals("Colour Quant and Huffman Algorithm - Quant 512")) {
+        HashMap<String, ArrayList<String>> result = runColourHuffman512();
+        algoResult.put(algorithm, result);
+      }
+      else if (algorithm.equals("Colour Quant and Huffman Algorithm - String Array")) {
+        HashMap<String, ArrayList<String>> result = runColourHuffmanString();
+        algoResult.put(algorithm, result);
+      }
+      else if (algorithm.equals("Image Dithering and Huffman Algorithm")) {
+        HashMap<String, ArrayList<String>> result = runDitheringHuffman();
+        algoResult.put(algorithm, result);
+      }
+      else {
+        throw new Exception("Invalid algorithm name for algo 1");
+      }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return algoResult;
+  }
+
 
   // Endpoint to run the 2 selected algorithms concurrently
   @GetMapping("/algorithms")
@@ -983,7 +1023,6 @@ public class AlgorithmController {
     HashMap<String, ArrayList<String>> algoResult2 = new HashMap<>();
 
     try {
-      System.out.println("concurrent algos running now");
       System.out.println("algo1: " + algo1 + " algo2: " + algo2);
 
       // Run the first algorithm concurrently
