@@ -20,7 +20,7 @@ public class AlgorithmController {
     algorithmMap.put("Colour Quant and Huffman Algorithm - Quant 512", UtilityColourHuffman512.class);
     algorithmMap.put("Image Dithering and Huffman Algorithm", UtilityDitheringHuffman.class);
     algorithmMap.put("Colour Quant and Huffman Algorithm - Quant 256", UtilityColourHuffman256.class);
-    algorithmMap.put("Colour Quant and Huffman Algorithm - String Array", UtilityColourHuffmanString.class);
+    // algorithmMap.put("Colour Quant and Huffman Algorithm - String Array", UtilityColourHuffmanString.class);
     algorithmMap.put("Huffman Algorithm", UtilityHuffmanOnly.class);
   }
 
@@ -45,7 +45,7 @@ public class AlgorithmController {
     try {
       System.out.println("test original algorithm now");
 
-      UtilityDitheringHuffman Utility = new UtilityDitheringHuffman();
+      UtilityColourHuffman256 Utility = new UtilityColourHuffman256();
 
       String ImageDirectory = "src/main/java/com/example/demo/images/";
       File directory = new File(ImageDirectory);
@@ -299,7 +299,7 @@ public class AlgorithmController {
         }
       }
     } catch (Exception e) {
-      System.out.println("An error occurred in the " + algorithm + " algorithm.");
+      System.out.println("An error occurred");
       e.printStackTrace();
     }
     return imageResults;
@@ -432,7 +432,7 @@ public class AlgorithmController {
         }
       }
     } catch (Exception e) {
-      System.out.println("An error occurred in the " + algorithm + " algorithm.");
+      System.out.println("An error occurred.");
       e.printStackTrace();
     }
     return imageResults;
@@ -444,7 +444,7 @@ public class AlgorithmController {
     HashMap<String, ArrayList<String>> imageResults = new HashMap<>();
 
     try {
-      UtilityColourHuffmanString Utility = new UtilityColourHuffmanString();
+      UtilityColourHuffman512 Utility = new UtilityColourHuffman512();
 
       String ImageDirectory = "src/main/java/com/example/demo/images/";
       File directory = new File(ImageDirectory);
@@ -565,7 +565,7 @@ public class AlgorithmController {
         }
       }
     } catch (Exception e) {
-      System.out.println("An error occurred in the " + algorithm + " algorithm.");
+      System.out.println("An error occurred.");
       e.printStackTrace();
     }
     return imageResults;
@@ -698,7 +698,7 @@ public class AlgorithmController {
         }
       }
     } catch (Exception e) {
-      System.out.println("An error occurred in the " + algorithm + " algorithm.");
+      System.out.println("An error occurred");
       e.printStackTrace();
     }
     return imageResults;
