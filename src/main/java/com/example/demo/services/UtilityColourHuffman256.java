@@ -6,99 +6,10 @@ import java.awt.image.BufferedImage;
 import java.util.*;
 import java.io.*;
 
-public class UtilityColourHuffman256 {
+public class UtilityColourHuffman256 extends Utility {
 	public Map<int[], String> dict;
 
-	public void Compress(int[][][] pixels, String outputFileName) throws IOException {
-		Color[] px = ColorQuantization.getPx(pixels);
-		// then compute desired 'box' size according to # of pixels in image & desired
-		// dynamic range
-		ColorQuantization.PX_PER_BOX = (int) Math.ceil((double) ColorQuantization.IMG_WIDTH
-				* (double) ColorQuantization.IMG_HEIGHT / (double) ColorQuantization.NEW_DYN_RANGE);
-		// prepare to compute palette
-		ColorQuantization.COUNT = 0;
-		ColorQuantization.NEW_PALETTE = new Color[ColorQuantization.NEW_DYN_RANGE];
-		// compute palette using median cut
-		System.out.println("Computing palette...");
-		ColorQuantization.cut(px, 0, ColorQuantization.NEW_DYN_RANGE, 0, ColorQuantization.NEW_DYN_RANGE, 0,
-				ColorQuantization.NEW_DYN_RANGE);
-
-		if (ColorQuantization.DEBUG) {
-			ColorQuantization.printPalette();
-		}
-
-		System.out.println("Preparing output file contents...");
-		String txt_file_contents = ColorQuantization.getCompressedFileContents();
-		String[] content = txt_file_contents.split(" ");
-		int[] intArray = new int[content.length];
-
-		for (int i = 0; i < content.length; i++) {
-			intArray[i] = Integer.parseInt(content[i]);
-		}
-
-		Map<Integer, String> huffmanCodes = HuffmanCoding.buildHuffmanCodes(intArray);
-
-		// Compress the input array into a binary string
-		String compressedData = HuffmanCoding.compressData(intArray, huffmanCodes);
-
-		byte[] byteArray = convertBinaryStringToByteArray(compressedData);
-
-		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(outputFileName))) {
-			// Write the Huffman tree and compressed data to the output file
-			oos.writeObject(huffmanCodes);
-			oos.writeObject(byteArray);
-		}
-	}
-
-	public static byte[] convertBinaryStringToByteArray(String binaryString) {
-		int length = binaryString.length();
-		int byteLength = (length + 7) / 8; // Calculate the number of bytes required
-
-		byte[] byteArray = new byte[byteLength];
-		for (int i = 0; i < length; i++) {
-			if (binaryString.charAt(i) == '1') {
-				int byteIndex = i / 8;
-				int bitIndex = 7 - (i % 8);
-				byteArray[byteIndex] |= (1 << bitIndex);
-			}
-		}
-
-		return byteArray;
-	}
-
-	public static String convertByteArrayToBinaryString(byte[] byteArray) {
-		StringBuilder binaryStringBuilder = new StringBuilder();
-
-		for (byte b : byteArray) {
-			for (int i = 7; i >= 0; i--) {
-				int bit = (b >> i) & 1;
-				binaryStringBuilder.append(bit);
-			}
-		}
-
-		return binaryStringBuilder.toString();
-	}
-
-	public int[][][] Decompress(String inputFileName) throws IOException, ClassNotFoundException {
-		Color[][] img = null;
-		try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(inputFileName))) {
-			// Read the Huffman tree from the input file
-			Map<Integer, String> huffmanCodes = (Map<Integer, String>) ois.readObject();
-			// Read the compressed data
-			byte[] byteArray = (byte[]) ois.readObject();
-
-			String binaryString = convertByteArrayToBinaryString(byteArray);
-			int[] decompressedData = HuffmanCoding.decompressData(binaryString, huffmanCodes);
-			img = ColorQuantization.readCompressedFile(decompressedData);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-		}
-		return ColorQuantization.savePNG(img, "decompr.png");
-	}
-}
-
-class HuffmanNode {
+static class HuffmanNode {
 	int value;
 	int frequency;
 	HuffmanNode left;
@@ -110,7 +21,7 @@ class HuffmanNode {
 	}
 }
 
-class HuffmanCoding {
+static class HuffmanCoding {
 	public static void main(String[] args) {
 		int[] input = { 1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3 }; // Example input data
 
@@ -202,7 +113,7 @@ class HuffmanCoding {
 	}
 }
 
-class ColorQuantization {
+static class ColorQuantization {
 	// number of colors to be computed for palette
 	public static final int NEW_DYN_RANGE = 256;
 	// used in cut() base case
@@ -695,5 +606,101 @@ class ColorQuantization {
 				pixelData[y][x][2] = blue;
 			}
 		return pixelData;
+	}
+}
+
+	@Override
+	public Utility createUtility() {
+		return new UtilityColourHuffman256();
+	}
+	 
+	@Override
+	public void Compress(int[][][] pixels, String outputFileName) throws IOException {
+		Color[] px = ColorQuantization.getPx(pixels);
+		// then compute desired 'box' size according to # of pixels in image & desired
+		// dynamic range
+		ColorQuantization.PX_PER_BOX = (int) Math.ceil((double) ColorQuantization.IMG_WIDTH
+				* (double) ColorQuantization.IMG_HEIGHT / (double) ColorQuantization.NEW_DYN_RANGE);
+		// prepare to compute palette
+		ColorQuantization.COUNT = 0;
+		ColorQuantization.NEW_PALETTE = new Color[ColorQuantization.NEW_DYN_RANGE];
+		// compute palette using median cut
+		System.out.println("Computing palette...");
+		ColorQuantization.cut(px, 0, ColorQuantization.NEW_DYN_RANGE, 0, ColorQuantization.NEW_DYN_RANGE, 0,
+				ColorQuantization.NEW_DYN_RANGE);
+
+		if (ColorQuantization.DEBUG) {
+			ColorQuantization.printPalette();
+		}
+
+		System.out.println("Preparing output file contents...");
+		String txt_file_contents = ColorQuantization.getCompressedFileContents();
+		String[] content = txt_file_contents.split(" ");
+		int[] intArray = new int[content.length];
+
+		for (int i = 0; i < content.length; i++) {
+			intArray[i] = Integer.parseInt(content[i]);
+		}
+
+		Map<Integer, String> huffmanCodes = HuffmanCoding.buildHuffmanCodes(intArray);
+
+		// Compress the input array into a binary string
+		String compressedData = HuffmanCoding.compressData(intArray, huffmanCodes);
+
+		byte[] byteArray = convertBinaryStringToByteArray(compressedData);
+
+		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(outputFileName))) {
+			// Write the Huffman tree and compressed data to the output file
+			oos.writeObject(huffmanCodes);
+			oos.writeObject(byteArray);
+		}
+	}
+
+	public static byte[] convertBinaryStringToByteArray(String binaryString) {
+		int length = binaryString.length();
+		int byteLength = (length + 7) / 8; // Calculate the number of bytes required
+
+		byte[] byteArray = new byte[byteLength];
+		for (int i = 0; i < length; i++) {
+			if (binaryString.charAt(i) == '1') {
+				int byteIndex = i / 8;
+				int bitIndex = 7 - (i % 8);
+				byteArray[byteIndex] |= (1 << bitIndex);
+			}
+		}
+
+		return byteArray;
+	}
+
+	public static String convertByteArrayToBinaryString(byte[] byteArray) {
+		StringBuilder binaryStringBuilder = new StringBuilder();
+
+		for (byte b : byteArray) {
+			for (int i = 7; i >= 0; i--) {
+				int bit = (b >> i) & 1;
+				binaryStringBuilder.append(bit);
+			}
+		}
+
+		return binaryStringBuilder.toString();
+	}
+
+	@Override
+	public int[][][] Decompress(String inputFileName) throws IOException, ClassNotFoundException {
+		Color[][] img = null;
+		try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(inputFileName))) {
+			// Read the Huffman tree from the input file
+			Map<Integer, String> huffmanCodes = (Map<Integer, String>) ois.readObject();
+			// Read the compressed data
+			byte[] byteArray = (byte[]) ois.readObject();
+
+			String binaryString = convertByteArrayToBinaryString(byteArray);
+			int[] decompressedData = HuffmanCoding.decompressData(binaryString, huffmanCodes);
+			img = ColorQuantization.readCompressedFile(decompressedData);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+		}
+		return ColorQuantization.savePNG(img, "decompr.png");
 	}
 }

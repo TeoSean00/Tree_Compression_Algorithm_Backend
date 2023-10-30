@@ -7,12 +7,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 
-public class UtilityDitheringHuffman extends Utility {
+public class UtilityHuffmanOnly extends Utility implements Serializable {
     class HuffmanNode implements Serializable {
-        public int value; // The pixel value
-        public int frequency; // Frequency of the pixel value
-        public HuffmanNode left; // Left child
-        public HuffmanNode right; // Right child
+        public int value;             // The pixel value
+        public int frequency;         // Frequency of the pixel value
+        public HuffmanNode left;      // Left child
+        public HuffmanNode right;     // Right child
     
         public HuffmanNode(int value, int frequency) {
             this.value = value;
@@ -20,35 +20,49 @@ public class UtilityDitheringHuffman extends Utility {
             this.left = null;
             this.right = null;
         }
-    
         @Override
         public String toString() {
             return "Value: " + value + ", Frequency: " + frequency;
         }
     }
 
-	@Override
-	public Utility createUtility() {
-		return new UtilityDitheringHuffman();
-	}
-
+    @Override
+    public Utility createUtility() {
+        return new UtilityHuffmanOnly();
+    }
+    
     @Override
     public void Compress(int[][][] pixels, String outputFileName) throws IOException {
+        // System.out.println(pixels.length);
+        // System.out.println(pixels[0].length);
+        // System.out.println(pixels[0][0].length);
         int quantizationLevels = 128;
-
+    
         // Quantize the image
         int[][][] quantizedPixels = quantizeImageDithering(pixels, quantizationLevels);
-
-        HashMap<Integer, Integer> frequencyTable = buildFrequencyTable(quantizedPixels);
+    
+        // Assuming that rleCompressedData is already in the correct format
+        // List<Integer> rleCompressedData = runLengthEncode(quantizedPixels);
+    
+        HashMap<Integer, Integer> frequencyTable = buildFrequencyTable(pixels);
+        // System.out.println(frequencyTable);
         // Build a Huffman tree from the frequency table
         HuffmanNode root = buildHuffmanTree(frequencyTable);
-
+    
         // Create a mapping of pixel values to Huffman codes
         HashMap<Integer, String> huffmanCodes = buildHuffmanCodes(root, "");
-
+    
         // Encode the RLE-compressed data using Huffman codes
-        String compressedString = encodeWithHuffman(quantizedPixels, huffmanCodes);
+        String compressedString = encodeWithHuffman(pixels, huffmanCodes);
         byte[] compressedData = convertBinaryStringToByteArray(compressedString);
+        // StringBuilder stringBuilder = new StringBuilder();
+        // for (byte b : compressedData) {
+        //     stringBuilder.append(String.format("\\x%02X", b));
+        // }
+        // String byteArrayString = stringBuilder.toString();
+        // System.out.println(byteArrayString);
+        // this.data = compressedData;
+        // this.root = root;
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(outputFileName))) {
             // Write the Huffman tree and compressed data to the output file
             oos.writeObject(root);
@@ -97,22 +111,22 @@ public class UtilityDitheringHuffman extends Utility {
             System.out.println(); // Add a blank line to separate 2D slices
         }
     }
-
+    
     private int[][][] quantizeImageDithering(int[][][] pixels, int levels) {
         int width = pixels.length;
         int height = pixels[0].length;
         int depth = pixels[0][0].length;
         int[][][] quantizedPixels = new int[width][height][depth];
-
+    
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 for (int k = 0; k < depth; k++) {
                     int oldPixel = pixels[i][j][k];
-                    int newPixel = (int) ((oldPixel * (levels - 1)) / 255.0);
+                    int newPixel = (int)((oldPixel * (levels - 1)) / 255.0);
 
                     quantizedPixels[i][j][k] = newPixel;
                     int quantizationError = oldPixel - newPixel;
-
+    
                     // Distribute the error to neighboring pixels
                     if (i + 1 < width) {
                         quantizedPixels[i + 1][j][k] += quantizationError * 7 / 16;
@@ -129,13 +143,13 @@ public class UtilityDitheringHuffman extends Utility {
                 }
             }
         }
-
+    
         return quantizedPixels;
     }
-
+    
     private HashMap<Integer, Integer> buildFrequencyTable(int[][][] pixels) {
         HashMap<Integer, Integer> frequencyTable = new HashMap<>();
-
+    
         for (int[][] pixelRow : pixels) {
             for (int[] pixel : pixelRow) {
                 for (int value : pixel) {
@@ -144,19 +158,22 @@ public class UtilityDitheringHuffman extends Utility {
                 }
             }
         }
+    
+        // System.out.println(frequencyTable);
         return frequencyTable;
     }
 
     private HuffmanNode buildHuffmanTree(HashMap<Integer, Integer> frequencyTable) {
         PriorityQueue<HuffmanNode> minHeap = new PriorityQueue<>(
-                (a, b) -> a.frequency - b.frequency);
+            (a, b) -> a.frequency - b.frequency
+        );
 
         // Create a leaf node for each pixel value and add them to the min-heap
         for (int value : frequencyTable.keySet()) {
             HuffmanNode node = new HuffmanNode(value, frequencyTable.get(value));
             minHeap.offer(node);
         }
-        // Build the Huffman tree by merging nodes until only one node (the root)
+        // Build the Huffman tree by merging nodes until only one node (the root) remains
         while (minHeap.size() > 1) {
             HuffmanNode left = minHeap.poll();
             HuffmanNode right = minHeap.poll();
@@ -165,31 +182,32 @@ public class UtilityDitheringHuffman extends Utility {
             parent.right = right;
             minHeap.offer(parent);
         }
-
-        return minHeap.poll(); // The root of the Huffman tree
+        
+        return minHeap.poll();  // The root of the Huffman tree
     }
 
     private HashMap<Integer, String> buildHuffmanCodes(HuffmanNode root, String currentCode) {
         HashMap<Integer, String> huffmanCodes = new HashMap<>();
-
+    
         if (root == null) {
             return huffmanCodes;
         }
-
+    
         if (root.left == null && root.right == null) {
             // This is a leaf node (pixel value), add it to the codes map
             huffmanCodes.put(root.value, currentCode);
         }
-
+    
         // Recursively build codes for left and right subtrees
         huffmanCodes.putAll(buildHuffmanCodes(root.left, currentCode + "0"));
         huffmanCodes.putAll(buildHuffmanCodes(root.right, currentCode + "1"));
+        // System.out.println(huffmanCodes);
         return huffmanCodes;
     }
 
     private String encodeWithHuffman(int[][][] pixels, HashMap<Integer, String> huffmanCodes) {
         StringBuilder compressedData = new StringBuilder();
-
+    
         for (int[][] pixelRow : pixels) {
             for (int[] pixel : pixelRow) {
                 for (int value : pixel) {
@@ -198,14 +216,14 @@ public class UtilityDitheringHuffman extends Utility {
                 }
             }
         }
-
+    
         return compressedData.toString();
     }
-
+    
     public static int[] decompressData(String compressedData, Map<Integer, String> huffmanCodes) {
         List<Integer> decompressedData = new ArrayList<>();
         StringBuilder currentCode = new StringBuilder();
-
+        
         for (char bit : compressedData.toCharArray()) {
             currentCode.append(bit);
             for (Map.Entry<Integer, String> entry : huffmanCodes.entrySet()) {
@@ -230,10 +248,10 @@ public class UtilityDitheringHuffman extends Utility {
         for (Map.Entry<Integer, String> entry : huffmanMappings.entrySet()) {
             reverseHuffmanMappings.put(entry.getValue(), entry.getKey());
         }
-
+    
         List<Integer> pixelValues = new ArrayList<>();
         StringBuilder currentCode = new StringBuilder();
-
+    
         for (char bit : compressedData.toCharArray()) {
             currentCode.append(bit);
             Integer value = reverseHuffmanMappings.get(currentCode.toString());
@@ -242,13 +260,13 @@ public class UtilityDitheringHuffman extends Utility {
                 currentCode.setLength(0); // Reset the currentCode
             }
         }
-
+        
         int width = 500; // Set the correct width from your header data;
         int height = 375; // Set the correct height from your header data;
         int depth = 3; // Set the correct depth from your header data;
         int[][][] pixels = new int[width][height][depth];
         int pixelIndex = 0;
-
+    
         for (int h = 0; h < width; h++) {
             for (int w = 0; w < height; w++) {
                 for (int c = 0; c < depth; c++) {
@@ -257,26 +275,57 @@ public class UtilityDitheringHuffman extends Utility {
                 }
             }
         }
-
+    
         return pixels;
     }
-
-    @Override
+    
+    @Override   
     public int[][][] Decompress(String inputFileName) throws IOException, ClassNotFoundException {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(inputFileName))) {
             // Read the Huffman tree from the input file
             HuffmanNode root = (HuffmanNode) ois.readObject();
-
+            // HuffmanNode root = this.root;
+    
             // Read the compressed data
             byte[] compressedData = (byte[]) ois.readObject();
             String binaryString = convertByteArrayToBinaryString(compressedData);
-
+            // byte[] compressedData = this.data;
+    
             // Decode the compressed data using the Huffman tree
             HashMap<Integer, String> huffmanCodes = buildHuffmanCodes(root, "");
 
             int[][][] pixels = decodeWithHuffman(binaryString, huffmanCodes);
+            // int rowIndex = 0;
+            // int colIndex = 0;
+            // int depthIndex = 0;
+            // StringBuilder currentCode = new StringBuilder();
+    
+            // for (byte bit : compressedData) {
+            //     currentCode.append(bit);
+            //     for (HashMap.Entry<Integer, String> entry : huffmanCodes.entrySet()) {
+            //         int pixelValue = entry.getKey();
+            //         String code = entry.getValue();
+    
+            //         if (code.equals(currentCode.toString())) {
+            //             pixels[rowIndex][colIndex][depthIndex] = pixelValue;
+    
+            //             depthIndex++;
+            //             if (depthIndex >= depth) {
+            //                 depthIndex = 0;
+            //                 colIndex++;
+            //                 if (colIndex >= height) {
+            //                     colIndex = 0;
+            //                     rowIndex++;
+            //                 }
+            //             }
+    
+            //             currentCode = new StringBuilder();
+            //             break;
+            //         }
+            //     }
+            // }
+    
             return pixels;
         }
     }
-
 }
