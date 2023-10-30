@@ -45,17 +45,17 @@ public class AlgorithmController {
     try {
       System.out.println("test original algorithm now");
 
-      UtilityHuffmanOnly Utility = new UtilityHuffmanOnly();
+      UtilityDitheringHuffman Utility = new UtilityDitheringHuffman();
 
       String ImageDirectory = "src/main/java/com/example/demo/images/";
       File directory = new File(ImageDirectory);
       File[] files = directory.listFiles();
 
       if (files != null) {
-        System.out.println("1");
+        System.out.println("files not null");
         for (File file : files) {
           if (file.isFile()) {
-            System.out.println("2");
+            System.out.println("file is of type file");
             ArrayList<String> imageInfo = new ArrayList<>();
             String imageName = file.getName();
 

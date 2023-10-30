@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 
-public class UtilityDitheringHuffman extends Utility {
+public class UtilityDitheringHuffman extends Utility implements Serializable {
     class HuffmanNode implements Serializable {
         public int value; // The pixel value
         public int frequency; // Frequency of the pixel value
@@ -278,5 +278,4 @@ public class UtilityDitheringHuffman extends Utility {
             return pixels;
         }
     }
-
 }
