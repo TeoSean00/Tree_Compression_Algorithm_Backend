@@ -33,19 +33,12 @@ public class UtilityHuffmanOnly extends Utility implements Serializable {
     
     @Override
     public void Compress(int[][][] pixels, String outputFileName) throws IOException {
-        // System.out.println(pixels.length);
-        // System.out.println(pixels[0].length);
-        // System.out.println(pixels[0][0].length);
         int quantizationLevels = 128;
     
         // Quantize the image
         int[][][] quantizedPixels = quantizeImageDithering(pixels, quantizationLevels);
-    
-        // Assuming that rleCompressedData is already in the correct format
-        // List<Integer> rleCompressedData = runLengthEncode(quantizedPixels);
-    
+
         HashMap<Integer, Integer> frequencyTable = buildFrequencyTable(pixels);
-        // System.out.println(frequencyTable);
         // Build a Huffman tree from the frequency table
         HuffmanNode root = buildHuffmanTree(frequencyTable);
     
@@ -55,14 +48,6 @@ public class UtilityHuffmanOnly extends Utility implements Serializable {
         // Encode the RLE-compressed data using Huffman codes
         String compressedString = encodeWithHuffman(pixels, huffmanCodes);
         byte[] compressedData = convertBinaryStringToByteArray(compressedString);
-        // StringBuilder stringBuilder = new StringBuilder();
-        // for (byte b : compressedData) {
-        //     stringBuilder.append(String.format("\\x%02X", b));
-        // }
-        // String byteArrayString = stringBuilder.toString();
-        // System.out.println(byteArrayString);
-        // this.data = compressedData;
-        // this.root = root;
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(outputFileName))) {
             // Write the Huffman tree and compressed data to the output file
             oos.writeObject(root);
@@ -275,7 +260,6 @@ public class UtilityHuffmanOnly extends Utility implements Serializable {
                 }
             }
         }
-    
         return pixels;
     }
     
@@ -295,36 +279,6 @@ public class UtilityHuffmanOnly extends Utility implements Serializable {
             HashMap<Integer, String> huffmanCodes = buildHuffmanCodes(root, "");
 
             int[][][] pixels = decodeWithHuffman(binaryString, huffmanCodes);
-            // int rowIndex = 0;
-            // int colIndex = 0;
-            // int depthIndex = 0;
-            // StringBuilder currentCode = new StringBuilder();
-    
-            // for (byte bit : compressedData) {
-            //     currentCode.append(bit);
-            //     for (HashMap.Entry<Integer, String> entry : huffmanCodes.entrySet()) {
-            //         int pixelValue = entry.getKey();
-            //         String code = entry.getValue();
-    
-            //         if (code.equals(currentCode.toString())) {
-            //             pixels[rowIndex][colIndex][depthIndex] = pixelValue;
-    
-            //             depthIndex++;
-            //             if (depthIndex >= depth) {
-            //                 depthIndex = 0;
-            //                 colIndex++;
-            //                 if (colIndex >= height) {
-            //                     colIndex = 0;
-            //                     rowIndex++;
-            //                 }
-            //             }
-    
-            //             currentCode = new StringBuilder();
-            //             break;
-            //         }
-            //     }
-            // }
-    
             return pixels;
         }
     }
