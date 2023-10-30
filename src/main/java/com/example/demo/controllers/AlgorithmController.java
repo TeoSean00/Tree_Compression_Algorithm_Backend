@@ -6,6 +6,10 @@ import java.io.File;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.util.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -173,7 +177,7 @@ public class AlgorithmController {
 
 
   // Helper function to run the UtilityColourHuffman - 512 algorithm
-  private HashMap<String, ArrayList<String>> runColourHuffman512() {
+  private HashMap<String, ArrayList<String>> runColourHuffman512(String CompressDirectory, String DecompressDirectory) {
 
     HashMap<String, ArrayList<String>> imageResults = new HashMap<>();
 
@@ -210,7 +214,7 @@ public class AlgorithmController {
 
             // Compression
             // Define location and name for the compressed file to be created
-            String compressed_file_name = "src/main/java/com/example/demo/compressed/"
+            String compressed_file_name = CompressDirectory + "/"
                 + imageName.substring(0, imageName.lastIndexOf('.')) + ".bin";
 
             // start compress timer
@@ -268,12 +272,12 @@ public class AlgorithmController {
 
             // convert back to image for visualisation
             PixeltoImageConverter PixeltoImageConverter = new PixeltoImageConverter(newPixelData);
-            PixeltoImageConverter.saveImage("src/main/java/com/example/demo/decompressed/" + imageName, "png");
+            PixeltoImageConverter.saveImage(DecompressDirectory + "/" + imageName, "png");
 
             // Get the two bufferedimages for calculations
             BufferedImage originalimage = ImageIO.read(new File(ImageDirectory + imageName));
             BufferedImage decompressedimage = ImageIO
-                .read(new File("src/main/java/com/example/demo/decompressed/" + imageName));
+                .read(new File(DecompressDirectory + "/" + imageName));
 
             // calculate MAE
             double MAE = MAECalculator.calculateMAE(originalimage, decompressedimage);
@@ -306,7 +310,7 @@ public class AlgorithmController {
   }
 
   // Helper function to run the UtilityColourHuffman - 256 algorithm
-  private HashMap<String, ArrayList<String>> runColourHuffman256() {
+  private HashMap<String, ArrayList<String>> runColourHuffman256(String CompressDirectory, String DecompressDirectory) {
 
     HashMap<String, ArrayList<String>> imageResults = new HashMap<>();
 
@@ -343,7 +347,7 @@ public class AlgorithmController {
 
             // Compression
             // Define location and name for the compressed file to be created
-            String compressed_file_name = "src/main/java/com/example/demo/compressed/"
+            String compressed_file_name = CompressDirectory + "/"
                 + imageName.substring(0, imageName.lastIndexOf('.')) + ".bin";
 
             // start compress timer
@@ -401,12 +405,12 @@ public class AlgorithmController {
 
             // convert back to image for visualisation
             PixeltoImageConverter PixeltoImageConverter = new PixeltoImageConverter(newPixelData);
-            PixeltoImageConverter.saveImage("src/main/java/com/example/demo/decompressed/" + imageName, "png");
+            PixeltoImageConverter.saveImage(DecompressDirectory + "/" + imageName, "png");
 
             // Get the two bufferedimages for calculations
             BufferedImage originalimage = ImageIO.read(new File(ImageDirectory + imageName));
             BufferedImage decompressedimage = ImageIO
-                .read(new File("src/main/java/com/example/demo/decompressed/" + imageName));
+                .read(new File(DecompressDirectory + "/" + imageName));
 
             // calculate MAE
             double MAE = MAECalculator.calculateMAE(originalimage, decompressedimage);
@@ -439,7 +443,7 @@ public class AlgorithmController {
   }
 
   // Helper function to run the UtilityColourHuffman - String algorithm
-  private HashMap<String, ArrayList<String>> runColourHuffmanString() {
+  private HashMap<String, ArrayList<String>> runColourHuffmanString(String CompressDirectory, String DecompressDirectory) {
 
     HashMap<String, ArrayList<String>> imageResults = new HashMap<>();
 
@@ -476,7 +480,7 @@ public class AlgorithmController {
 
             // Compression
             // Define location and name for the compressed file to be created
-            String compressed_file_name = "src/main/java/com/example/demo/compressed/"
+            String compressed_file_name = CompressDirectory +"/"
                 + imageName.substring(0, imageName.lastIndexOf('.')) + ".bin";
 
             // start compress timer
@@ -534,12 +538,12 @@ public class AlgorithmController {
 
             // convert back to image for visualisation
             PixeltoImageConverter PixeltoImageConverter = new PixeltoImageConverter(newPixelData);
-            PixeltoImageConverter.saveImage("src/main/java/com/example/demo/decompressed/" + imageName, "png");
+            PixeltoImageConverter.saveImage(DecompressDirectory + "/" + imageName, "png");
 
             // Get the two bufferedimages for calculations
             BufferedImage originalimage = ImageIO.read(new File(ImageDirectory + imageName));
             BufferedImage decompressedimage = ImageIO
-                .read(new File("src/main/java/com/example/demo/decompressed/" + imageName));
+                .read(new File(DecompressDirectory + "/" + imageName));
 
             // calculate MAE
             double MAE = MAECalculator.calculateMAE(originalimage, decompressedimage);
@@ -572,7 +576,7 @@ public class AlgorithmController {
   }
 
   // Helper function to run the UtilityDitheringHuffman algorithm
-  private HashMap<String, ArrayList<String>> runDitheringHuffman() {
+  private HashMap<String, ArrayList<String>> runDitheringHuffman(String CompressDirectory, String DecompressDirectory) {
 
     HashMap<String, ArrayList<String>> imageResults = new HashMap<>();
 
@@ -609,7 +613,7 @@ public class AlgorithmController {
 
             // Compression
             // Define location and name for the compressed file to be created
-            String compressed_file_name = "src/main/java/com/example/demo/compressed/"
+            String compressed_file_name = CompressDirectory + "/"
                 + imageName.substring(0, imageName.lastIndexOf('.')) + ".bin";
 
             // start compress timer
@@ -667,12 +671,12 @@ public class AlgorithmController {
 
             // convert back to image for visualisation
             PixeltoImageConverter PixeltoImageConverter = new PixeltoImageConverter(newPixelData);
-            PixeltoImageConverter.saveImage("src/main/java/com/example/demo/decompressed/" + imageName, "png");
+            PixeltoImageConverter.saveImage(DecompressDirectory + "/" + imageName, "png");
 
             // Get the two bufferedimages for calculations
             BufferedImage originalimage = ImageIO.read(new File(ImageDirectory + imageName));
             BufferedImage decompressedimage = ImageIO
-                .read(new File("src/main/java/com/example/demo/decompressed/" + imageName));
+                .read(new File(DecompressDirectory + "/" + imageName));
 
             // calculate MAE
             double MAE = MAECalculator.calculateMAE(originalimage, decompressedimage);
@@ -705,7 +709,7 @@ public class AlgorithmController {
   }
 
   // Helper function to run the UtilityHuffmanOnly algorithm
-  private HashMap<String, ArrayList<String>> runHuffmanOnly() {
+  private HashMap<String, ArrayList<String>> runHuffmanOnly(String CompressDirectory, String DecompressDirectory) {
 
     HashMap<String, ArrayList<String>> imageResults = new HashMap<>();
 
@@ -742,7 +746,7 @@ public class AlgorithmController {
 
             // Compression
             // Define location and name for the compressed file to be created
-            String compressed_file_name = "src/main/java/com/example/demo/compressed/"
+            String compressed_file_name = CompressDirectory + "/"
                 + imageName.substring(0, imageName.lastIndexOf('.')) + ".bin";
 
             // start compress timer
@@ -800,12 +804,12 @@ public class AlgorithmController {
 
             // convert back to image for visualisation
             PixeltoImageConverter PixeltoImageConverter = new PixeltoImageConverter(newPixelData);
-            PixeltoImageConverter.saveImage("src/main/java/com/example/demo/decompressed/" + imageName, "png");
+            PixeltoImageConverter.saveImage(DecompressDirectory + "/" + imageName, "png");
 
             // Get the two bufferedimages for calculations
             BufferedImage originalimage = ImageIO.read(new File(ImageDirectory + imageName));
             BufferedImage decompressedimage = ImageIO
-                .read(new File("src/main/java/com/example/demo/decompressed/" + imageName));
+                .read(new File(DecompressDirectory + "/" + imageName));
 
             // calculate MAE
             double MAE = MAECalculator.calculateMAE(originalimage, decompressedimage);
@@ -838,7 +842,7 @@ public class AlgorithmController {
   }
 
   // Helper function to run the UtilityOriginalBad algorithm
-  private HashMap<String, ArrayList<String>> runOriginalBad() {
+  private HashMap<String, ArrayList<String>> runOriginalBad(String CompressDirectory, String DecompressDirectory) {
 
     HashMap<String, ArrayList<String>> imageResults = new HashMap<>();
 
@@ -875,7 +879,7 @@ public class AlgorithmController {
 
             // Compression
             // Define location and name for the compressed file to be created
-            String compressed_file_name = "src/main/java/com/example/demo/compressed/"
+            String compressed_file_name = CompressDirectory + "/"
                 + imageName.substring(0, imageName.lastIndexOf('.')) + ".bin";
 
             // start compress timer
@@ -933,12 +937,12 @@ public class AlgorithmController {
 
             // convert back to image for visualisation
             PixeltoImageConverter PixeltoImageConverter = new PixeltoImageConverter(newPixelData);
-            PixeltoImageConverter.saveImage("src/main/java/com/example/demo/decompressed/" + imageName, "png");
+            PixeltoImageConverter.saveImage(DecompressDirectory + "/" + imageName, "png");
 
             // Get the two bufferedimages for calculations
             BufferedImage originalimage = ImageIO.read(new File(ImageDirectory + imageName));
             BufferedImage decompressedimage = ImageIO
-                .read(new File("src/main/java/com/example/demo/decompressed/" + imageName));
+                .read(new File(DecompressDirectory + "/" + imageName));
 
             // calculate MAE
             double MAE = MAECalculator.calculateMAE(originalimage, decompressedimage);
@@ -971,34 +975,34 @@ public class AlgorithmController {
   }
 
   // Helper function to run an algorithm based on the provided algorithm name
-  private HashMap<String, HashMap<String, ArrayList<String>>> runChosenAlgorithm(String algorithm) {
+  private HashMap<String, HashMap<String, ArrayList<String>>> runChosenAlgorithm(String algorithm, String CompressDirectory, String DecompressDirectory) {
 
     HashMap<String, HashMap<String, ArrayList<String>>> algoResult = new HashMap<>();
 
     try {
         // Run the first algorithm concurrently
       if (algorithm.equals("Original Bad Algorithm")) {
-        HashMap<String, ArrayList<String>> result = runOriginalBad();
+        HashMap<String, ArrayList<String>> result = runOriginalBad(CompressDirectory, DecompressDirectory);
         algoResult.put(algorithm, result);
       }
       else if (algorithm.equals("Huffman Algorithm")) {
-        HashMap<String, ArrayList<String>> result = runHuffmanOnly();
+        HashMap<String, ArrayList<String>> result = runHuffmanOnly(CompressDirectory, DecompressDirectory);
         algoResult.put(algorithm, result);
       }
       else if (algorithm.equals("Colour Quant and Huffman Algorithm - Quant 256")) {
-        HashMap<String, ArrayList<String>> result = runColourHuffman256();
+        HashMap<String, ArrayList<String>> result = runColourHuffman256(CompressDirectory, DecompressDirectory);
         algoResult.put(algorithm, result);
       }
       else if (algorithm.equals("Colour Quant and Huffman Algorithm - Quant 512")) {
-        HashMap<String, ArrayList<String>> result = runColourHuffman512();
+        HashMap<String, ArrayList<String>> result = runColourHuffman512(CompressDirectory, DecompressDirectory);
         algoResult.put(algorithm, result);
       }
       else if (algorithm.equals("Colour Quant and Huffman Algorithm - String Array")) {
-        HashMap<String, ArrayList<String>> result = runColourHuffmanString();
+        HashMap<String, ArrayList<String>> result = runColourHuffmanString(CompressDirectory, DecompressDirectory);
         algoResult.put(algorithm, result);
       }
       else if (algorithm.equals("Image Dithering and Huffman Algorithm")) {
-        HashMap<String, ArrayList<String>> result = runDitheringHuffman();
+        HashMap<String, ArrayList<String>> result = runDitheringHuffman(CompressDirectory, DecompressDirectory);
         algoResult.put(algorithm, result);
       }
       else {
@@ -1017,80 +1021,38 @@ public class AlgorithmController {
     @RequestParam(name = "algo1", required = true) String algo1,
     @RequestParam(name = "algo2", required = true) String algo2
   ) {
-
     HashMap<String, HashMap<String, ArrayList<String>>> overallResults = new HashMap<String, HashMap<String, ArrayList<String>>>();
-    HashMap<String, ArrayList<String>> algoResult1 = new HashMap<>();
-    HashMap<String, ArrayList<String>> algoResult2 = new HashMap<>();
+
+    // Create an executor service with a thread pool of size 2
+    ExecutorService executor = Executors.newFixedThreadPool(2);
+
+    // Create tasks for running algo1 and algo2 concurrently
+    List<Callable<HashMap<String, HashMap<String, ArrayList<String>>>>> tasks = new ArrayList<>();
+    tasks.add(() -> runChosenAlgorithm(algo1, "src/main/java/com/example/demo/compressed", "src/main/java/com/example/demo/decompressed"));
+    tasks.add(() -> runChosenAlgorithm(algo2, "src/main/java/com/example/demo/compressed2", "src/main/java/com/example/demo/decompressed2"));
 
     try {
-      System.out.println("algo1: " + algo1 + " algo2: " + algo2);
+      System.out.println("Running the algorithms concurrently");
 
-      // Run the first algorithm concurrently
-      if (algo1.equals("Original Bad Algorithm")) {
-        algoResult1 = runOriginalBad();
-        overallResults.put(algo1, algoResult1);
-      }
-      else if (algo1.equals("Huffman Algorithm")) {
-        algoResult1 = runHuffmanOnly();
-        overallResults.put(algo1, algoResult1);
-      }
-      else if (algo1.equals("Colour Quant and Huffman Algorithm - Quant 256")) {
-        algoResult1 = runColourHuffman256();
-        overallResults.put(algo1, algoResult1);
-      }
-      else if (algo1.equals("Colour Quant and Huffman Algorithm - Quant 512")) {
-        algoResult1 = runColourHuffman512();
-        overallResults.put(algo1, algoResult1);
-      }
-      else if (algo1.equals("Colour Quant and Huffman Algorithm - String Array")) {
-        algoResult1 = runColourHuffmanString();
-        overallResults.put(algo1, algoResult1);
-      }
-      else if (algo1.equals("Image Dithering and Huffman Algorithm")) {
-        algoResult1 = runDitheringHuffman();
-        overallResults.put(algo1, algoResult1);
-      }
-      else {
-        throw new Exception("Invalid algorithm name for algo 1");
+      // Run the tasks concurrently
+      List<Future<HashMap<String, HashMap<String, ArrayList<String>>>>> concurrentResults = executor.invokeAll(tasks);
+
+      // Get the results from the concurrent tasks
+      for (Future<HashMap<String, HashMap<String, ArrayList<String>>>> concurrentResult : concurrentResults) {
+        HashMap<String, HashMap<String, ArrayList<String>>> result = concurrentResult.get();
+        overallResults.putAll(result);
       }
 
-      System.out.println("-------------------------algo1 done-------------------------");
-
-      // Run the first algorithm concurrently
-      if (algo2.equals("Original Bad Algorithm")) {
-        algoResult2 = runOriginalBad();
-        overallResults.put(algo2, algoResult2);
-      }
-      else if (algo2.equals("Huffman Algorithm")) {
-        algoResult2 = runHuffmanOnly();
-        overallResults.put(algo2, algoResult2);
-      }
-      else if (algo2.equals("Colour Quant and Huffman Algorithm - Quant 256")) {
-        algoResult2 = runColourHuffman256();
-        overallResults.put(algo2, algoResult2);
-      }
-      else if (algo2.equals("Colour Quant and Huffman Algorithm - Quant 512")) {
-        algoResult2 = runColourHuffman512();
-        overallResults.put(algo2, algoResult2);
-      }
-      else if (algo2.equals("Colour Quant and Huffman Algorithm - String Array")) {
-        algoResult2 = runColourHuffmanString();
-        overallResults.put(algo2, algoResult2);
-      }
-      else if (algo2.equals("Image Dithering and Huffman Algorithm")) {
-        algoResult2 = runDitheringHuffman();
-        overallResults.put(algo2, algoResult2);
-      }
-      else {
-        throw new Exception("Invalid algorithm name for algo 2");
-      }
-
-      System.out.println("-------------------------algo2 done-------------------------");
-    } 
+      System.out.println("Concurrent algorithms completed");
+    }
     catch (Exception e) {
       System.out.println("An error occurred.");
       e.printStackTrace();
+    } finally {
+      // Shut down the executor service
+      executor.shutdown();
     }
+
     return overallResults;
   }
 }
