@@ -45,7 +45,7 @@ public class AlgorithmController {
     try {
       System.out.println("test original algorithm now");
 
-      UtilityColourHuffman512 Utility = new UtilityColourHuffman512();
+      UtilityColourHuffmanString Utility = new UtilityColourHuffmanString();
 
       String ImageDirectory = "src/main/java/com/example/demo/images/";
       File directory = new File(ImageDirectory);
