@@ -1,6 +1,8 @@
 package com.example.demo.controllers;
 
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.HttpStatus;
 import com.example.demo.services.*;
 import java.io.File;
 import javax.imageio.ImageIO;
@@ -16,7 +18,6 @@ import java.util.concurrent.Future;
 @RestController
 public class AlgorithmController {
   private HashMap<String, Class<? extends Utility>> algorithmMap = new HashMap<>();
-
 
   // Default constructor to initialise the algorithm map
   public AlgorithmController() {
@@ -1021,6 +1022,11 @@ public class AlgorithmController {
     @RequestParam(name = "algo1", required = true) String algo1,
     @RequestParam(name = "algo2", required = true) String algo2
   ) {
+
+    if (algo1.equals(algo2)) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Chosen algorithms cannot be the same");
+    }
+
     HashMap<String, HashMap<String, ArrayList<String>>> overallResults = new HashMap<String, HashMap<String, ArrayList<String>>>();
 
     // Create an executor service with a thread pool of size 2
@@ -1045,11 +1051,14 @@ public class AlgorithmController {
 
       System.out.println("Concurrent algorithms completed");
     }
+    catch (ResponseStatusException e) {
+      System.out.println("Algorithms validation exception: " + e.getMessage());
+      e.printStackTrace();
+    }
     catch (Exception e) {
       System.out.println("An error occurred.");
       e.printStackTrace();
     } finally {
-      // Shut down the executor service
       executor.shutdown();
     }
 
