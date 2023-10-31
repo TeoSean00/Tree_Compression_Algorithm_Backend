@@ -19,5 +19,8 @@ https://github.com/TeoSean00/Tree_Compression_Algorithm_Frontend
 5. run 'npm install' in the frontend root directory terminal to install the necessary dependencies.
 ```
 ```
-6. run 'npm run dev' in the frontend root directory terminal to start the frontend React application, which will be running on http://127.0.0.1:5173/
+6. run 'npm run dev' in the frontend root directory terminal to start the frontend React application.
+```
+```
+7. React will be running on http://127.0.0.1:5173.
 ```
