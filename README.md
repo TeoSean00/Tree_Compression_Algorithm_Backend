@@ -3,7 +3,7 @@ This Full-Stack Application (React and Springboot) was developed with the purpos
 
 We have a total of 6 completed algorithms to choose from, with our most optimized one being 'Colour Quant and Huffman Algorithm - Quant 256'. Feel free to run it against any of the other algorithms, with the 'Original Bad Algorithm' option being the worst algorithm. More explanation of our approach, experimentation and other algorithms is covered in our YouTube link below!
 
-### Youtube In-Depth Explanation Video
+### Youtube In-Depth Explanation & Demo Video
 [Youtube Link](https://youtu.be/ktmXxdhAatc)
 
 ### Short Demonstration
